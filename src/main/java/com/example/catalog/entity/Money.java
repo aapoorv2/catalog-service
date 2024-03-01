@@ -1,8 +1,8 @@
-package com.example.swiggy.entity;
+package com.example.catalog.entity;
 
 import java.io.Serializable;
 
-import com.example.swiggy.enums.Currency;
+import com.example.catalog.enums.Currency;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

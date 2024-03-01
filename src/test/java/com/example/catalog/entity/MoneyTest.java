@@ -1,6 +1,6 @@
-package com.example.swiggy.entity;
+package com.example.catalog.entity;
 
-import com.example.swiggy.enums.Currency;
+import com.example.catalog.enums.Currency;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

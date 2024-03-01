@@ -1,4 +1,4 @@
-package com.example.swiggy.enums;
+package com.example.catalog.enums;
 
 public enum OrderStatus {
     UNASSIGNED,

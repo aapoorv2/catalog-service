@@ -1,4 +1,4 @@
-package com.example.swiggy.entity;
+package com.example.catalog.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,4 +16,9 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+    public Item(String name, Money price, Restaurant restaurant) {
+        this.name = name;
+        this.price = price;
+        this.restaurant = restaurant;
+    }
 }

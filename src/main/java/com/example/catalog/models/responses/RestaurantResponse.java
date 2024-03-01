@@ -1,7 +1,9 @@
-package com.example.swiggy.models.responses;
+package com.example.catalog.models.responses;
 
-import com.example.swiggy.entity.Item;
-import com.example.swiggy.enums.Location;
+import com.example.catalog.entity.Item;
+import com.example.catalog.enums.City;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +17,7 @@ public class RestaurantResponse {
     private Long restaurant_id;
     private String name;
     private List<Item> menu;
-    private Location location;
+    @Enumerated(EnumType.STRING)
+    private City city;
 
 }
