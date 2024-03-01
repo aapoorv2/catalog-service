@@ -2,6 +2,7 @@ package com.example.catalog.entity;
 
 import com.example.catalog.enums.City;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Restaurant {
     @Id
@@ -23,6 +25,7 @@ public class Restaurant {
     private City city;
 
     public Restaurant(String name, City city) {
+        this.id = 1L;
         this.name = name;
         this.city = city;
     }

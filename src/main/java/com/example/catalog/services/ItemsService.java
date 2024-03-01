@@ -24,7 +24,7 @@ public class ItemsService {
         Item item = new Item(name, price, restaurant);
         restaurant.addItem(item);
         itemRepository.save(item);
-        return "Created a Restaurant with id: " + item.getId();
+        return "Created an Item with id: " + item.getId();
     }
     public List<ItemResponse> fetchAllItems(Long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).get();

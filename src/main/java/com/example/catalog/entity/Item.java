@@ -17,6 +17,7 @@ public class Item {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
     public Item(String name, Money price, Restaurant restaurant) {
+        this.id = 1L;
         this.name = name;
         this.price = price;
         this.restaurant = restaurant;
