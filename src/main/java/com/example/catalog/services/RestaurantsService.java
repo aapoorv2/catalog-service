@@ -2,6 +2,7 @@ package com.example.catalog.services;
 
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
+import com.example.catalog.exceptions.RestaurantNotFoundException;
 import com.example.catalog.repositories.RestaurantRepository;
 import com.example.catalog.models.responses.RestaurantResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class RestaurantsService {
         return responses;
     }
     public RestaurantResponse fetch(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id).get();
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException("Restaurant with id " + id + " not found"));
         return new RestaurantResponse(id, restaurant.getName(), restaurant.getCity());
     }
 }

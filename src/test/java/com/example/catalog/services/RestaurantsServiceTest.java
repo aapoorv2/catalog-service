@@ -5,6 +5,7 @@ import com.example.catalog.entities.Money;
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
+import com.example.catalog.exceptions.RestaurantNotFoundException;
 import com.example.catalog.models.responses.RestaurantResponse;
 import com.example.catalog.repositories.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +58,15 @@ class RestaurantsServiceTest {
         RestaurantResponse response = restaurantsService.fetch(1L);
 
         assertEquals(expectedResponse, response);
+        verify(restaurantRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testFetchingARestaurant_expectException() {
+        assertThrows(RestaurantNotFoundException.class, () -> {
+            restaurantsService.fetch(1L);
+        });
+        verify(restaurantRepository, times(1)).findById(1L);
     }
 
 }
