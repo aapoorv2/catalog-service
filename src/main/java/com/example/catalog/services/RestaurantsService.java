@@ -15,12 +15,12 @@ public class RestaurantsService {
     @Autowired
     RestaurantRepository restaurantRepository;
 
-    public String addRestaurant(String name, City city) {
+    public String create(String name, City city) {
         Restaurant restaurant = new Restaurant(name, city);
         restaurant = restaurantRepository.save(restaurant);
         return "Created a Restaurant with id: " + restaurant.getId();
     }
-    public List<RestaurantResponse> fetchAllRestaurants() {
+    public List<RestaurantResponse> fetchAll() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         List<RestaurantResponse> responses = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
@@ -28,7 +28,7 @@ public class RestaurantsService {
         }
         return responses;
     }
-    public RestaurantResponse fetchRestaurant(Long id) {
+    public RestaurantResponse fetch(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id).get();
         return new RestaurantResponse(id, restaurant.getName(), restaurant.getCity());
     }

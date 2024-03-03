@@ -18,17 +18,17 @@ public class RestaurantsController {
 
     @PostMapping("")
     ResponseEntity<String> addRestaurant(@RequestBody RestaurantRequest restaurantRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantsService.addRestaurant(restaurantRequest.getName(), restaurantRequest.getCity()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantsService.create(restaurantRequest.getName(), restaurantRequest.getCity()));
     }
 
     @GetMapping("")
     ResponseEntity<List<RestaurantResponse>> fetchAllRestaurants() {
-        return ResponseEntity.ok().body(restaurantsService.fetchAllRestaurants());
+        return ResponseEntity.ok().body(restaurantsService.fetchAll());
     }
 
     @GetMapping("/{id}")
     ResponseEntity<RestaurantResponse> fetchRestaurant(@PathVariable Long id) {
-        return ResponseEntity.ok().body(restaurantsService.fetchRestaurant(id));
+        return ResponseEntity.ok().body(restaurantsService.fetch(id));
     }
 
 }

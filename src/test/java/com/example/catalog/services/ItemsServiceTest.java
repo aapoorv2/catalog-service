@@ -5,6 +5,7 @@ import com.example.catalog.entities.Money;
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
+import com.example.catalog.exceptions.ItemNotFoundException;
 import com.example.catalog.models.responses.ItemResponse;
 import com.example.catalog.repositories.ItemRepository;
 import com.example.catalog.repositories.RestaurantRepository;
@@ -36,9 +37,10 @@ class ItemsServiceTest {
     void testAddingAnItem_success() {
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(new Restaurant()));
 
-        itemsService.addItem("test_name", new Money(10.0, Currency.INR), 1L);
+        itemsService.create("test_name", new Money(10.0, Currency.INR), 1L);
 
         verify(itemRepository, times(1)).save(any(Item.class));
+        verify(restaurantRepository, times(1)).findById(1L);
     }
     @Test
     void testFetchingAnItem_success() {
@@ -47,9 +49,18 @@ class ItemsServiceTest {
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         ItemResponse expectedResponse = new ItemResponse(1L, name, new Money(10.0, Currency.INR));
 
-        ItemResponse response = itemsService.fetchItem(1L, 1L);
+        ItemResponse response = itemsService.fetch(1L, 1L);
 
         assertEquals(expectedResponse, response);
+        verify(itemRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testFetchingAnItem_expectException(){
+        assertThrows(ItemNotFoundException.class, () -> {
+            itemsService.fetch(1L, 1L);
+        });
+        verify(itemRepository, times(1)).findById(1L);
     }
 
 }

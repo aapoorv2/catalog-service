@@ -42,7 +42,7 @@ class ItemsControllerTest {
         String name = "itemOne";
         Money price = new Money(10.0, Currency.INR);
         String expectedResponse = "Created a Restaurant with id: 1";
-        when(itemsService.addItem(name, price, 1L)).thenReturn(expectedResponse);
+        when(itemsService.create(name, price, 1L)).thenReturn(expectedResponse);
         String request = new ObjectMapper().writeValueAsString(new ItemRequest(name, price));
 
         mvc.perform(MockMvcRequestBuilders.post("/restaurants/1/items")
@@ -51,7 +51,7 @@ class ItemsControllerTest {
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(itemsService, times(1)).addItem(name, price, 1L);
+        verify(itemsService, times(1)).create(name, price, 1L);
     }
     @Test
     void testFetchingAnItem_success() throws Exception {
@@ -59,14 +59,14 @@ class ItemsControllerTest {
         Money price = new Money(10.0, Currency.INR);
         ItemResponse itemResponse = new ItemResponse(1L, name, price);
         String expectedResponse = new ObjectMapper().writeValueAsString(itemResponse);
-        when(itemsService.fetchItem(1L, 1L)).thenReturn(itemResponse);
+        when(itemsService.fetch(1L, 1L)).thenReturn(itemResponse);
 
         mvc.perform(MockMvcRequestBuilders.get("/restaurants/1/items/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(itemsService, times(1)).fetchItem(1L, 1L);
+        verify(itemsService, times(1)).fetch(1L, 1L);
     }
 
     @Test
@@ -75,14 +75,14 @@ class ItemsControllerTest {
         ItemResponse itemResponseTwo = new ItemResponse(2L, "itemTwo", new Money(10.0, Currency.INR));
         List<ItemResponse> responses = new ArrayList<>(List.of(itemResponseOne, itemResponseTwo));
         String expectedResponse = new ObjectMapper().writeValueAsString(responses);
-        when(itemsService.fetchAllItems(1L)).thenReturn(responses);
+        when(itemsService.fetchAll(1L)).thenReturn(responses);
 
         mvc.perform(MockMvcRequestBuilders.get("/restaurants/1/items")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(itemsService, times(1)).fetchAllItems(1L);
+        verify(itemsService, times(1)).fetchAll(1L);
     }
 
 }

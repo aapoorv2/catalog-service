@@ -45,7 +45,7 @@ class RestaurantsControllerTest {
         City city = City.MUMBAI;
         String request = new ObjectMapper().writeValueAsString(new RestaurantRequest(name, city));
         String expectedResponse = "Created a Restaurant with id: 1";
-        when(restaurantsService.addRestaurant(name, city)).thenReturn(expectedResponse);
+        when(restaurantsService.create(name, city)).thenReturn(expectedResponse);
 
         mvc.perform(MockMvcRequestBuilders.post("/restaurants")
                         .content(request)
@@ -53,7 +53,7 @@ class RestaurantsControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(restaurantsService, times(1)).addRestaurant(name, city);
+        verify(restaurantsService, times(1)).create(name, city);
     }
     @Test
     void testFetchingARestaurant_success() throws Exception {
@@ -64,14 +64,14 @@ class RestaurantsControllerTest {
         List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
         RestaurantResponse restaurantResponse = new RestaurantResponse(1L, name, city);
         String expectedResponse = new ObjectMapper().writeValueAsString(restaurantResponse);
-        when(restaurantsService.fetchRestaurant(1L)).thenReturn(restaurantResponse);
+        when(restaurantsService.fetch(1L)).thenReturn(restaurantResponse);
 
         mvc.perform(MockMvcRequestBuilders.get("/restaurants/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(restaurantsService, times(1)).fetchRestaurant(1L);
+        verify(restaurantsService, times(1)).fetch(1L);
 
     }
     @Test
@@ -86,14 +86,14 @@ class RestaurantsControllerTest {
         RestaurantResponse restaurantResponseTwo = new RestaurantResponse(2L, secondName, city);
         List<RestaurantResponse> responses = new ArrayList<>(List.of(restaurantResponseOne, restaurantResponseTwo));
         String expectedResponse = new ObjectMapper().writeValueAsString(responses);
-        when(restaurantsService.fetchAllRestaurants()).thenReturn(responses);
+        when(restaurantsService.fetchAll()).thenReturn(responses);
 
         mvc.perform(MockMvcRequestBuilders.get("/restaurants")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(restaurantsService, times(1)).fetchAllRestaurants();
+        verify(restaurantsService, times(1)).fetchAll();
     }
 
 }

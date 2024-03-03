@@ -20,14 +20,14 @@ public class ItemsService {
     ItemRepository itemRepository;
     @Autowired
     RestaurantRepository restaurantRepository;
-    public String addItem(String name, Money price, Long restaurantId) {
+    public String create(String name, Money price, Long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
         Item item = new Item(name, price, restaurant);
         restaurant.addItem(item);
         itemRepository.save(item);
         return "Created an Item with id: " + item.getId();
     }
-    public List<ItemResponse> fetchAllItems(Long restaurantId) {
+    public List<ItemResponse> fetchAll(Long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
         List<ItemResponse> responses = new ArrayList<>();
         for (Item item : restaurant.getMenu()) {
@@ -35,8 +35,8 @@ public class ItemsService {
         }
         return responses;
     }
-    public ItemResponse fetchItem(Long restaurantId, Long itemId) {
-        Item item = itemRepository.findById(itemId).get();
+    public ItemResponse fetch(Long restaurantId, Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Item with id " + itemId + " not found"));
         if (!Objects.equals(item.getRestaurant().getId(), restaurantId)) {
             throw new ItemNotFoundException("Item " + item.getName() + " not found in Restaurant " + item.getRestaurant().getName());
         }

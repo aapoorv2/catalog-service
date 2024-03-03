@@ -18,12 +18,12 @@ public class ItemsController {
     ItemsService itemsService;
     @PostMapping("")
     ResponseEntity<String> addItem(@PathVariable Long restaurantId, @RequestBody ItemRequest itemRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(itemsService.addItem(itemRequest.getName(), itemRequest.getPrice(), restaurantId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemsService.create(itemRequest.getName(), itemRequest.getPrice(), restaurantId));
     }
     @GetMapping("/{id}")
     ResponseEntity<?> fetchItem(@PathVariable Long restaurantId, @PathVariable Long id) {
         try {
-            ItemResponse response = itemsService.fetchItem(restaurantId, id);
+            ItemResponse response = itemsService.fetch(restaurantId, id);
             return ResponseEntity.ok().body(response);
         } catch (ItemNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -32,6 +32,6 @@ public class ItemsController {
     }
     @GetMapping("")
     ResponseEntity<List<ItemResponse>> fetchItems(@PathVariable Long restaurantId) {
-        return ResponseEntity.ok().body(itemsService.fetchAllItems(restaurantId));
+        return ResponseEntity.ok().body(itemsService.fetchAll(restaurantId));
     }
 }

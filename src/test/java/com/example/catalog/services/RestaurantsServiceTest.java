@@ -38,7 +38,7 @@ class RestaurantsServiceTest {
         Restaurant restaurant = new Restaurant(1L, name, city);
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);
 
-        String response = restaurantsService.addRestaurant(name, city);
+        String response = restaurantsService.create(name, city);
 
         verify(restaurantRepository, times(1)).save(any(Restaurant.class));
         assertEquals("Created a Restaurant with id: 1", response);
@@ -54,7 +54,7 @@ class RestaurantsServiceTest {
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
         RestaurantResponse expectedResponse = new RestaurantResponse(1L, name, city);
 
-        RestaurantResponse response = restaurantsService.fetchRestaurant(1L);
+        RestaurantResponse response = restaurantsService.fetch(1L);
 
         assertEquals(expectedResponse, response);
     }
