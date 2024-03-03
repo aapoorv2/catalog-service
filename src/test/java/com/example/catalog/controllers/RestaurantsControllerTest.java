@@ -1,8 +1,8 @@
 package com.example.catalog.controllers;
 
-import com.example.catalog.entity.Item;
-import com.example.catalog.entity.Money;
-import com.example.catalog.entity.Restaurant;
+import com.example.catalog.entities.Item;
+import com.example.catalog.entities.Money;
+import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
 import com.example.catalog.models.requests.RestaurantRequest;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -63,7 +62,7 @@ class RestaurantsControllerTest {
         Item itemOne = new Item("itemOne", new Money(10.0, Currency.INR), new Restaurant());
         Item itemTwo = new Item("itemTwo", new Money(10.0, Currency.INR), new Restaurant());
         List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
-        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, name, menu, city);
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, name, city);
         String expectedResponse = new ObjectMapper().writeValueAsString(restaurantResponse);
         when(restaurantsService.fetchRestaurant(1L)).thenReturn(restaurantResponse);
 
@@ -83,8 +82,8 @@ class RestaurantsControllerTest {
         Item itemOne = new Item("itemOne", new Money(10.0, Currency.INR), new Restaurant());
         Item itemTwo = new Item("itemTwo", new Money(10.0, Currency.INR), new Restaurant());
         List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
-        RestaurantResponse restaurantResponseOne = new RestaurantResponse(1L, firstName, menu, city);
-        RestaurantResponse restaurantResponseTwo = new RestaurantResponse(2L, secondName, menu, city);
+        RestaurantResponse restaurantResponseOne = new RestaurantResponse(1L, firstName, city);
+        RestaurantResponse restaurantResponseTwo = new RestaurantResponse(2L, secondName, city);
         List<RestaurantResponse> responses = new ArrayList<>(List.of(restaurantResponseOne, restaurantResponseTwo));
         String expectedResponse = new ObjectMapper().writeValueAsString(responses);
         when(restaurantsService.fetchAllRestaurants()).thenReturn(responses);

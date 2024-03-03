@@ -1,4 +1,4 @@
-package com.example.catalog.entity;
+package com.example.catalog.entities;
 
 import com.example.catalog.enums.Currency;
 import org.junit.jupiter.api.Test;

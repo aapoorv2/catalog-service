@@ -1,6 +1,6 @@
 package com.example.catalog.models.requests;
 
-import com.example.catalog.entity.Money;
+import com.example.catalog.entities.Money;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.example.catalog.models.responses;
 
-import com.example.catalog.entity.Money;
+import com.example.catalog.entities.Money;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

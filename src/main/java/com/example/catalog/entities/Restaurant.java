@@ -1,4 +1,4 @@
-package com.example.catalog.entity;
+package com.example.catalog.entities;
 
 import com.example.catalog.enums.City;
 import jakarta.persistence.*;
@@ -22,10 +22,15 @@ public class Restaurant {
     private String name;
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Item> menu = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
     private City city;
 
     public Restaurant(String name, City city) {
-        this.id = 1L;
+        this.name = name;
+        this.city = city;
+    }
+    public Restaurant(Long id, String name, City city) {
+        this.id = id;
         this.name = name;
         this.city = city;
     }

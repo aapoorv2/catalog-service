@@ -1,8 +1,9 @@
 package com.example.catalog.services;
 
-import com.example.catalog.entity.Item;
-import com.example.catalog.entity.Money;
-import com.example.catalog.entity.Restaurant;
+import com.example.catalog.entities.Item;
+import com.example.catalog.entities.Money;
+import com.example.catalog.entities.Restaurant;
+import com.example.catalog.exceptions.ItemNotFoundException;
 import com.example.catalog.models.responses.ItemResponse;
 import com.example.catalog.repositories.ItemRepository;
 import com.example.catalog.repositories.RestaurantRepository;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class ItemsService {
@@ -34,8 +35,11 @@ public class ItemsService {
         }
         return responses;
     }
-    public ItemResponse fetchItem(Long itemId) {
+    public ItemResponse fetchItem(Long restaurantId, Long itemId) {
         Item item = itemRepository.findById(itemId).get();
+        if (!Objects.equals(item.getRestaurant().getId(), restaurantId)) {
+            throw new ItemNotFoundException("Item " + item.getName() + " not found in Restaurant " + item.getRestaurant().getName());
+        }
         return new ItemResponse(itemId, item.getName(), item.getPrice());
     }
 }

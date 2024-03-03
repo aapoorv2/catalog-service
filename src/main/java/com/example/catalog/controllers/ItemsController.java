@@ -1,5 +1,6 @@
 package com.example.catalog.controllers;
 
+import com.example.catalog.exceptions.ItemNotFoundException;
 import com.example.catalog.models.requests.ItemRequest;
 import com.example.catalog.models.responses.ItemResponse;
 import com.example.catalog.services.ItemsService;
@@ -20,8 +21,14 @@ public class ItemsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemsService.addItem(itemRequest.getName(), itemRequest.getPrice(), restaurantId));
     }
     @GetMapping("/{id}")
-    ResponseEntity<ItemResponse> fetchItem(@PathVariable Long id) {
-        return ResponseEntity.ok().body(itemsService.fetchItem(id));
+    ResponseEntity<?> fetchItem(@PathVariable Long restaurantId, @PathVariable Long id) {
+        try {
+            ItemResponse response = itemsService.fetchItem(restaurantId, id);
+            return ResponseEntity.ok().body(response);
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
     @GetMapping("")
     ResponseEntity<List<ItemResponse>> fetchItems(@PathVariable Long restaurantId) {

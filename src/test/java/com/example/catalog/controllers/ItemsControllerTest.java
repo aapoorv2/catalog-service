@@ -1,6 +1,6 @@
 package com.example.catalog.controllers;
 
-import com.example.catalog.entity.Money;
+import com.example.catalog.entities.Money;
 import com.example.catalog.enums.Currency;
 import com.example.catalog.models.requests.ItemRequest;
 import com.example.catalog.models.responses.ItemResponse;
@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
@@ -60,14 +59,14 @@ class ItemsControllerTest {
         Money price = new Money(10.0, Currency.INR);
         ItemResponse itemResponse = new ItemResponse(1L, name, price);
         String expectedResponse = new ObjectMapper().writeValueAsString(itemResponse);
-        when(itemsService.fetchItem(1L)).thenReturn(itemResponse);
+        when(itemsService.fetchItem(1L, 1L)).thenReturn(itemResponse);
 
         mvc.perform(MockMvcRequestBuilders.get("/restaurants/1/items/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
-        verify(itemsService, times(1)).fetchItem(1L);
+        verify(itemsService, times(1)).fetchItem(1L, 1L);
     }
 
     @Test

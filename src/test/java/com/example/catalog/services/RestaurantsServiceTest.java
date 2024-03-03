@@ -1,8 +1,8 @@
 package com.example.catalog.services;
 
-import com.example.catalog.entity.Item;
-import com.example.catalog.entity.Money;
-import com.example.catalog.entity.Restaurant;
+import com.example.catalog.entities.Item;
+import com.example.catalog.entities.Money;
+import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
 import com.example.catalog.models.responses.RestaurantResponse;
@@ -33,7 +33,12 @@ class RestaurantsServiceTest {
 
     @Test
     void testAddingARestaurant_success() {
-        String response = restaurantsService.addRestaurant("test_name", City.MUMBAI);
+        String name = "test_name";
+        City city = City.MUMBAI;
+        Restaurant restaurant = new Restaurant(1L, name, city);
+        when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);
+
+        String response = restaurantsService.addRestaurant(name, city);
 
         verify(restaurantRepository, times(1)).save(any(Restaurant.class));
         assertEquals("Created a Restaurant with id: 1", response);
@@ -47,7 +52,7 @@ class RestaurantsServiceTest {
         List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
         Restaurant restaurant = new Restaurant(1L, name, menu, city);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
-        RestaurantResponse expectedResponse = new RestaurantResponse(1L, name, menu, city);
+        RestaurantResponse expectedResponse = new RestaurantResponse(1L, name, city);
 
         RestaurantResponse response = restaurantsService.fetchRestaurant(1L);
 
