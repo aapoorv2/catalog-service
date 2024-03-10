@@ -5,7 +5,9 @@ import com.example.catalog.entities.Money;
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
+import com.example.catalog.exceptions.ItemAlreadyExistsException;
 import com.example.catalog.exceptions.ItemNotFoundException;
+import com.example.catalog.exceptions.RestaurantNotFoundException;
 import com.example.catalog.models.responses.ItemResponse;
 import com.example.catalog.models.responses.RestaurantResponse;
 import com.example.catalog.repositories.ItemRepository;
@@ -44,6 +46,21 @@ class ItemsServiceTest {
         verify(itemRepository, times(1)).save(any(Item.class));
         verify(restaurantRepository, times(1)).findById(1L);
     }
+
+    @Test
+    void testAddingAnItemWithTheSameName_expectException() {
+        Item item = Item.builder().name("existing_name").build();
+        Restaurant restaurant = new Restaurant(1L, "test_name", List.of(item), City.DELHI);
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
+
+        assertThrows(ItemAlreadyExistsException.class, () -> {
+            itemsService.create("existing_name", new Money(10.0, Currency.INR), 1L);
+        });
+
+        verify(itemRepository, times(0)).save(any(Item.class));
+        verify(restaurantRepository, times(1)).findById(1L);
+    }
+
     @Test
     void testFetchingAnItem_success() {
         String name = "test_name";
@@ -80,4 +97,5 @@ class ItemsServiceTest {
         assertEquals(expectedResponses, responses);
         verify(restaurantRepository, times(1)).findById(1L);
     }
+
 }
