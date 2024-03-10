@@ -2,6 +2,7 @@ package com.example.catalog.services;
 
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
+import com.example.catalog.exceptions.RestaurantAlreadyExistsException;
 import com.example.catalog.exceptions.RestaurantNotFoundException;
 import com.example.catalog.repositories.RestaurantRepository;
 import com.example.catalog.models.responses.RestaurantResponse;
@@ -17,6 +18,10 @@ public class RestaurantsService {
     RestaurantRepository restaurantRepository;
 
     public String create(String name, City city) {
+        Restaurant existingRestaurant = restaurantRepository.findByName(name).orElse(null);
+        if (existingRestaurant != null) {
+            throw new RestaurantAlreadyExistsException("A restaurant with the same name already exists");
+        }
         Restaurant restaurant = new Restaurant(name, city);
         restaurant = restaurantRepository.save(restaurant);
         return "Created a Restaurant with id: " + restaurant.getId();

@@ -5,6 +5,7 @@ import com.example.catalog.entities.Money;
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
+import com.example.catalog.exceptions.RestaurantAlreadyExistsException;
 import com.example.catalog.exceptions.RestaurantNotFoundException;
 import com.example.catalog.models.responses.RestaurantResponse;
 import com.example.catalog.repositories.RestaurantRepository;
@@ -41,8 +42,24 @@ class RestaurantsServiceTest {
 
         String response = restaurantsService.create(name, city);
 
+        verify(restaurantRepository, times(1)).findByName(name);
         verify(restaurantRepository, times(1)).save(any(Restaurant.class));
         assertEquals("Created a Restaurant with id: 1", response);
+    }
+
+    @Test
+    void testAddingARestaurantWithTheSameName_expectException() {
+        String name = "existing_name";
+        City city = City.MUMBAI;
+        Restaurant existingRestaurant = new Restaurant(1L, name, city);
+        when(restaurantRepository.findByName(name)).thenReturn(Optional.of(existingRestaurant));
+
+        assertThrows(RestaurantAlreadyExistsException.class, () -> {
+            restaurantsService.create(name, city);
+        });
+
+        verify(restaurantRepository, times(1)).findByName(name);
+        verify(restaurantRepository, times(0)).save(any(Restaurant.class));
     }
     @Test
     void testFetchingARestaurant_success() {
