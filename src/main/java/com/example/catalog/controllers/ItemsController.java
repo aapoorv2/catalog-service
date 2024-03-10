@@ -1,5 +1,6 @@
 package com.example.catalog.controllers;
 
+import com.example.catalog.exceptions.ItemAlreadyExistsException;
 import com.example.catalog.exceptions.ItemNotFoundException;
 import com.example.catalog.models.requests.ItemRequest;
 import com.example.catalog.models.responses.ItemResponse;
@@ -18,7 +19,11 @@ public class ItemsController {
     ItemsService itemsService;
     @PostMapping("")
     ResponseEntity<String> addItem(@PathVariable Long restaurantId, @RequestBody ItemRequest itemRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(itemsService.create(itemRequest.getName(), itemRequest.getPrice(), restaurantId));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(itemsService.create(itemRequest.getName(), itemRequest.getPrice(), restaurantId));
+        } catch (ItemAlreadyExistsException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     @GetMapping("/{id}")
     ResponseEntity<?> fetchItem(@PathVariable Long restaurantId, @PathVariable Long id) {

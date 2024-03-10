@@ -2,6 +2,7 @@ package com.example.catalog.controllers;
 
 import com.example.catalog.entities.Money;
 import com.example.catalog.enums.Currency;
+import com.example.catalog.exceptions.ItemAlreadyExistsException;
 import com.example.catalog.models.requests.ItemRequest;
 import com.example.catalog.models.responses.ItemResponse;
 import com.example.catalog.services.ItemsService;
@@ -41,7 +42,7 @@ class ItemsControllerTest {
     void testAddingAnItemToARestaurant_success() throws Exception {
         String name = "itemOne";
         Money price = new Money(10.0, Currency.INR);
-        String expectedResponse = "Created a Restaurant with id: 1";
+        String expectedResponse = "Created an Item with id: 1";
         when(itemsService.create(name, price, 1L)).thenReturn(expectedResponse);
         String request = new ObjectMapper().writeValueAsString(new ItemRequest(name, price));
 
@@ -50,6 +51,23 @@ class ItemsControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andExpect(MockMvcResultMatchers.content()
+                        .string(expectedResponse));
+        verify(itemsService, times(1)).create(name, price, 1L);
+    }
+
+    @Test
+    void testAddingAnItemWithTheSameName_expectErrorResponse() throws Exception {
+        String name = "existing_name";
+        Money price = new Money(10.0, Currency.INR);
+        String expectedResponse = "An item with the same name already exists";
+        when(itemsService.create(name, price, 1L)).thenThrow(new ItemAlreadyExistsException(expectedResponse));
+        String request = new ObjectMapper().writeValueAsString(new ItemRequest(name, price));
+
+        mvc.perform(MockMvcRequestBuilders.post("/restaurants/1/items")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
         verify(itemsService, times(1)).create(name, price, 1L);
     }
