@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.catalog.constants.TestNamings.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -35,7 +36,7 @@ class RestaurantsServiceTest {
 
     @Test
     void testAddingARestaurant_success() {
-        String name = "test_name";
+        String name = TEST_RESTAURANT_NAME;
         City city = City.MUMBAI;
         Restaurant restaurant = new Restaurant(1L, name, city);
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);
@@ -44,12 +45,12 @@ class RestaurantsServiceTest {
 
         verify(restaurantRepository, times(1)).findByName(name);
         verify(restaurantRepository, times(1)).save(any(Restaurant.class));
-        assertEquals("Created a Restaurant with id: 1", response);
+        assertEquals(TEST_RESTAURANT_CREATED, response);
     }
 
     @Test
     void testAddingARestaurantWithTheSameName_expectException() {
-        String name = "existing_name";
+        String name = TEST_RESTAURANT_NAME;
         City city = City.MUMBAI;
         Restaurant existingRestaurant = new Restaurant(1L, name, city);
         when(restaurantRepository.findByName(name)).thenReturn(Optional.of(existingRestaurant));
@@ -63,10 +64,10 @@ class RestaurantsServiceTest {
     }
     @Test
     void testFetchingARestaurant_success() {
-        String name = "test_name";
+        String name = TEST_RESTAURANT_NAME;
         City city = City.DELHI;
-        Item itemOne = new Item("itemOne", new Money(10.0, Currency.INR), new Restaurant());
-        Item itemTwo = new Item("itemTwo", new Money(10.0, Currency.INR), new Restaurant());
+        Item itemOne = new Item(TEST_ITEM_NAME, new Money(10.0, Currency.INR), new Restaurant());
+        Item itemTwo = new Item(TEST_ITEM_NAME_TWO, new Money(10.0, Currency.INR), new Restaurant());
         List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
         Restaurant restaurant = new Restaurant(1L, name, menu, city);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
@@ -88,8 +89,8 @@ class RestaurantsServiceTest {
 
     @Test
     void testFetchingAllRestaurants_success() {
-        Restaurant firstRestaurant = new Restaurant(1L, "test_name", City.DELHI);
-        Restaurant secondRestaurant = new Restaurant(2L, "test_name2", City.MUMBAI);
+        Restaurant firstRestaurant = new Restaurant(1L, TEST_RESTAURANT_NAME, City.DELHI);
+        Restaurant secondRestaurant = new Restaurant(2L, TEST_RESTAURANT_NAME_TWO, City.MUMBAI);
         RestaurantResponse firstResponse = new RestaurantResponse(firstRestaurant.getId(), firstRestaurant.getName(), firstRestaurant.getCity());
         RestaurantResponse secondResponse = new RestaurantResponse(secondRestaurant.getId(), secondRestaurant.getName(), secondRestaurant.getCity());
         List<RestaurantResponse> expectedResponses = List.of(firstResponse, secondResponse);

@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.catalog.constants.TestNamings.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -41,7 +42,7 @@ class ItemsServiceTest {
     void testAddingAnItem_success() {
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(new Restaurant()));
 
-        itemsService.create("test_name", new Money(10.0, Currency.INR), 1L);
+        itemsService.create(TEST_ITEM_NAME, new Money(10.0, Currency.INR), 1L);
 
         verify(itemRepository, times(1)).save(any(Item.class));
         verify(restaurantRepository, times(1)).findById(1L);
@@ -49,12 +50,12 @@ class ItemsServiceTest {
 
     @Test
     void testAddingAnItemWithTheSameName_expectException() {
-        Item item = Item.builder().name("existing_name").build();
-        Restaurant restaurant = new Restaurant(1L, "test_name", List.of(item), City.DELHI);
+        Item item = Item.builder().name(TEST_ITEM_NAME).build();
+        Restaurant restaurant = new Restaurant(1L, TEST_RESTAURANT_NAME, List.of(item), City.DELHI);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
         assertThrows(ItemAlreadyExistsException.class, () -> {
-            itemsService.create("existing_name", new Money(10.0, Currency.INR), 1L);
+            itemsService.create(TEST_ITEM_NAME, new Money(10.0, Currency.INR), 1L);
         });
 
         verify(itemRepository, times(0)).save(any(Item.class));
@@ -63,8 +64,8 @@ class ItemsServiceTest {
 
     @Test
     void testFetchingAnItem_success() {
-        String name = "test_name";
-        Item item = new Item(name, new Money(10.0, Currency.INR), new Restaurant(1L, "test_name", City.MUMBAI));
+        String name = TEST_ITEM_NAME;
+        Item item = new Item(name, new Money(10.0, Currency.INR), new Restaurant(1L, TEST_ITEM_NAME, City.MUMBAI));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         ItemResponse expectedResponse = new ItemResponse(1L, name, new Money(10.0, Currency.INR));
 
@@ -84,9 +85,9 @@ class ItemsServiceTest {
 
     @Test
     void testFetchingAllItems_success() {
-        Item firstItem = Item.builder().id(1L).price(new Money()).name("test_name").build();
-        Item secondItem = Item.builder().id(2L).price(new Money()).name("test_name2").build();
-        Restaurant restaurant = new Restaurant(1L, "test_name", List.of(firstItem, secondItem), City.DELHI);
+        Item firstItem = Item.builder().id(1L).price(new Money()).name(TEST_ITEM_NAME).build();
+        Item secondItem = Item.builder().id(2L).price(new Money()).name(TEST_ITEM_NAME_TWO).build();
+        Restaurant restaurant = new Restaurant(1L, TEST_RESTAURANT_NAME, List.of(firstItem, secondItem), City.DELHI);
         ItemResponse firstResponse = new ItemResponse(firstItem.getId(), firstItem.getName(), firstItem.getPrice());
         ItemResponse secondResponse = new ItemResponse(secondItem.getId(), secondItem.getName(), secondItem.getPrice());
         List<ItemResponse> expectedResponses = List.of(firstResponse, secondResponse);

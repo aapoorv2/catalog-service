@@ -25,6 +25,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.catalog.constants.Error.RESTAURANT_ALREADY_EXISTS;
+import static com.example.catalog.constants.TestNamings.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -42,10 +44,10 @@ class RestaurantsControllerTest {
 
     @Test
     void testAddingARestaurant_success() throws Exception {
-        String name = "restaurantOne";
+        String name = TEST_RESTAURANT_NAME;
         City city = City.MUMBAI;
         String request = new ObjectMapper().writeValueAsString(new RestaurantRequest(name, city));
-        String expectedResponse = "Created a Restaurant with id: 1";
+        String expectedResponse = TEST_RESTAURANT_CREATED;
         when(restaurantsService.create(name, city)).thenReturn(expectedResponse);
 
         mvc.perform(MockMvcRequestBuilders.post("/restaurants")
@@ -59,10 +61,10 @@ class RestaurantsControllerTest {
 
     @Test
     void testAddingARestaurantWithSameName_expectErrorResponse() throws Exception {
-        String name = "existing_name";
+        String name = TEST_RESTAURANT_NAME;
         City city = City.MUMBAI;
         String request = new ObjectMapper().writeValueAsString(new RestaurantRequest(name, city));
-        String expectedResponse = "A restaurant with the same name already exists";
+        String expectedResponse = RESTAURANT_ALREADY_EXISTS;
         when(restaurantsService.create(name, city)).thenThrow(new RestaurantAlreadyExistsException(expectedResponse));
 
         mvc.perform(MockMvcRequestBuilders.post("/restaurants")
@@ -75,11 +77,10 @@ class RestaurantsControllerTest {
     }
     @Test
     void testFetchingARestaurant_success() throws Exception {
-        String name = "restaurantOne";
+        String name = TEST_RESTAURANT_NAME;
         City city = City.MUMBAI;
-        Item itemOne = new Item("itemOne", new Money(10.0, Currency.INR), new Restaurant());
-        Item itemTwo = new Item("itemTwo", new Money(10.0, Currency.INR), new Restaurant());
-        List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
+        Item itemOne = new Item(TEST_ITEM_NAME, new Money(10.0, Currency.INR), new Restaurant());
+        Item itemTwo = new Item(TEST_ITEM_NAME_TWO, new Money(10.0, Currency.INR), new Restaurant());
         RestaurantResponse restaurantResponse = new RestaurantResponse(1L, name, city);
         String expectedResponse = new ObjectMapper().writeValueAsString(restaurantResponse);
         when(restaurantsService.fetch(1L)).thenReturn(restaurantResponse);
@@ -94,12 +95,11 @@ class RestaurantsControllerTest {
     }
     @Test
     void testFetchingAllRestaurants_success() throws Exception {
-        String firstName = "restaurantOne";
-        String secondName = "restaurantTwo";
+        String firstName = TEST_RESTAURANT_NAME;
+        String secondName = TEST_RESTAURANT_NAME_TWO;
         City city = City.MUMBAI;
-        Item itemOne = new Item("itemOne", new Money(10.0, Currency.INR), new Restaurant());
-        Item itemTwo = new Item("itemTwo", new Money(10.0, Currency.INR), new Restaurant());
-        List<Item> menu = new ArrayList<>(List.of(itemOne, itemTwo));
+        Item itemOne = new Item(TEST_ITEM_NAME, new Money(10.0, Currency.INR), new Restaurant());
+        Item itemTwo = new Item(TEST_ITEM_NAME_TWO, new Money(10.0, Currency.INR), new Restaurant());
         RestaurantResponse restaurantResponseOne = new RestaurantResponse(1L, firstName, city);
         RestaurantResponse restaurantResponseTwo = new RestaurantResponse(2L, secondName, city);
         List<RestaurantResponse> responses = new ArrayList<>(List.of(restaurantResponseOne, restaurantResponseTwo));

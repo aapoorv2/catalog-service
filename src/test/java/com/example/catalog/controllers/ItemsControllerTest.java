@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.catalog.constants.Error.ITEM_ALREADY_EXISTS;
+import static com.example.catalog.constants.TestNamings.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
@@ -40,9 +42,9 @@ class ItemsControllerTest {
 
     @Test
     void testAddingAnItemToARestaurant_success() throws Exception {
-        String name = "itemOne";
+        String name = TEST_ITEM_NAME;
         Money price = new Money(10.0, Currency.INR);
-        String expectedResponse = "Created an Item with id: 1";
+        String expectedResponse = TEST_ITEM_CREATED;
         when(itemsService.create(name, price, 1L)).thenReturn(expectedResponse);
         String request = new ObjectMapper().writeValueAsString(new ItemRequest(name, price));
 
@@ -57,9 +59,9 @@ class ItemsControllerTest {
 
     @Test
     void testAddingAnItemWithTheSameName_expectErrorResponse() throws Exception {
-        String name = "existing_name";
+        String name = TEST_ITEM_NAME;
         Money price = new Money(10.0, Currency.INR);
-        String expectedResponse = "An item with the same name already exists";
+        String expectedResponse = ITEM_ALREADY_EXISTS;
         when(itemsService.create(name, price, 1L)).thenThrow(new ItemAlreadyExistsException(expectedResponse));
         String request = new ObjectMapper().writeValueAsString(new ItemRequest(name, price));
 
@@ -73,9 +75,8 @@ class ItemsControllerTest {
     }
     @Test
     void testFetchingAnItem_success() throws Exception {
-        String name = "itemOne";
         Money price = new Money(10.0, Currency.INR);
-        ItemResponse itemResponse = new ItemResponse(1L, name, price);
+        ItemResponse itemResponse = new ItemResponse(1L, TEST_ITEM_NAME, price);
         String expectedResponse = new ObjectMapper().writeValueAsString(itemResponse);
         when(itemsService.fetch(1L, 1L)).thenReturn(itemResponse);
 
@@ -89,8 +90,8 @@ class ItemsControllerTest {
 
     @Test
     void testFetchingAllItems_success() throws Exception {
-        ItemResponse itemResponseOne = new ItemResponse(1L, "itemOne", new Money(10.0, Currency.INR));
-        ItemResponse itemResponseTwo = new ItemResponse(2L, "itemTwo", new Money(10.0, Currency.INR));
+        ItemResponse itemResponseOne = new ItemResponse(1L, TEST_ITEM_NAME, new Money(10.0, Currency.INR));
+        ItemResponse itemResponseTwo = new ItemResponse(2L, TEST_ITEM_NAME_TWO, new Money(10.0, Currency.INR));
         List<ItemResponse> responses = new ArrayList<>(List.of(itemResponseOne, itemResponseTwo));
         String expectedResponse = new ObjectMapper().writeValueAsString(responses);
         when(itemsService.fetchAll(1L)).thenReturn(responses);

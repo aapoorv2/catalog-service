@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.catalog.constants.Error.RESTAURANT_ALREADY_EXISTS;
+import static com.example.catalog.constants.Error.RESTAURANT_NOT_FOUND;
+import static com.example.catalog.constants.Success.CREATED_RESTAURANT;
+
 @Service
 public class RestaurantsService {
     @Autowired
@@ -20,11 +24,11 @@ public class RestaurantsService {
     public String create(String name, City city) {
         Restaurant existingRestaurant = restaurantRepository.findByName(name).orElse(null);
         if (existingRestaurant != null) {
-            throw new RestaurantAlreadyExistsException("A restaurant with the same name already exists");
+            throw new RestaurantAlreadyExistsException(RESTAURANT_ALREADY_EXISTS);
         }
         Restaurant restaurant = new Restaurant(name, city);
         restaurant = restaurantRepository.save(restaurant);
-        return "Created a Restaurant with id: " + restaurant.getId();
+        return CREATED_RESTAURANT + restaurant.getId();
     }
     public List<RestaurantResponse> fetchAll() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
@@ -35,7 +39,7 @@ public class RestaurantsService {
         return responses;
     }
     public RestaurantResponse fetch(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException("Restaurant with id " + id + " not found"));
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(RESTAURANT_NOT_FOUND));
         return new RestaurantResponse(id, restaurant.getName(), restaurant.getCity());
     }
 }

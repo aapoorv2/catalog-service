@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.catalog.constants.Error.ITEM_ALREADY_EXISTS;
+import static com.example.catalog.constants.Error.ITEM_NOT_FOUND;
+import static com.example.catalog.constants.Success.CREATED_ITEM;
+
 @Service
 public class ItemsService {
     @Autowired
@@ -26,13 +30,13 @@ public class ItemsService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RestaurantNotFoundException(""));
         for (Item item : restaurant.getMenu()) {
             if (Objects.equals(item.getName(), name)) {
-                throw new ItemAlreadyExistsException("An item with the same name already exists");
+                throw new ItemAlreadyExistsException(ITEM_ALREADY_EXISTS);
             }
         }
         Item item = new Item(name, price, restaurant);
         restaurant.addItem(item);
         itemRepository.save(item);
-        return "Created an Item with id: " + item.getId();
+        return CREATED_ITEM + item.getId();
     }
     public List<ItemResponse> fetchAll(Long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RestaurantNotFoundException(""));
@@ -43,7 +47,7 @@ public class ItemsService {
         return responses;
     }
     public ItemResponse fetch(Long restaurantId, Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Item with id " + itemId + " not found"));
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(ITEM_NOT_FOUND));
         if (!Objects.equals(item.getRestaurant().getId(), restaurantId)) {
             throw new ItemNotFoundException("Item " + item.getName() + " not found in Restaurant " + item.getRestaurant().getName());
         }
