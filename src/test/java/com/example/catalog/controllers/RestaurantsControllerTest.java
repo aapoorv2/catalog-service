@@ -5,6 +5,7 @@ import com.example.catalog.entities.Money;
 import com.example.catalog.entities.Restaurant;
 import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
+import com.example.catalog.exceptions.RestaurantAlreadyExistsException;
 import com.example.catalog.models.requests.RestaurantRequest;
 import com.example.catalog.models.responses.RestaurantResponse;
 import com.example.catalog.services.RestaurantsService;
@@ -51,6 +52,23 @@ class RestaurantsControllerTest {
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content()
+                        .string(expectedResponse));
+        verify(restaurantsService, times(1)).create(name, city);
+    }
+
+    @Test
+    void testAddingARestaurantWithSameName_expectErrorResponse() throws Exception {
+        String name = "existing_name";
+        City city = City.MUMBAI;
+        String request = new ObjectMapper().writeValueAsString(new RestaurantRequest(name, city));
+        String expectedResponse = "A restaurant with the same name already exists";
+        when(restaurantsService.create(name, city)).thenThrow(new RestaurantAlreadyExistsException(expectedResponse));
+
+        mvc.perform(MockMvcRequestBuilders.post("/restaurants")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content()
                         .string(expectedResponse));
         verify(restaurantsService, times(1)).create(name, city);

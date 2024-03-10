@@ -1,5 +1,7 @@
 package com.example.catalog.controllers;
 
+import com.example.catalog.exceptions.RestaurantAlreadyExistsException;
+import com.example.catalog.exceptions.RestaurantNotFoundException;
 import com.example.catalog.models.requests.RestaurantRequest;
 import com.example.catalog.models.responses.RestaurantResponse;
 import com.example.catalog.services.RestaurantsService;
@@ -18,7 +20,11 @@ public class RestaurantsController {
 
     @PostMapping("")
     ResponseEntity<String> addRestaurant(@RequestBody RestaurantRequest restaurantRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantsService.create(restaurantRequest.getName(), restaurantRequest.getCity()));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(restaurantsService.create(restaurantRequest.getName(), restaurantRequest.getCity()));
+        } catch (RestaurantAlreadyExistsException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("")
