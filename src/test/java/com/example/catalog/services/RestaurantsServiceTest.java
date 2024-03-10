@@ -69,4 +69,19 @@ class RestaurantsServiceTest {
         verify(restaurantRepository, times(1)).findById(1L);
     }
 
+    @Test
+    void testFetchingAllRestaurants_success() {
+        Restaurant firstRestaurant = new Restaurant(1L, "test_name", City.DELHI);
+        Restaurant secondRestaurant = new Restaurant(2L, "test_name2", City.MUMBAI);
+        RestaurantResponse firstResponse = new RestaurantResponse(firstRestaurant.getId(), firstRestaurant.getName(), firstRestaurant.getCity());
+        RestaurantResponse secondResponse = new RestaurantResponse(secondRestaurant.getId(), secondRestaurant.getName(), secondRestaurant.getCity());
+        List<RestaurantResponse> expectedResponses = List.of(firstResponse, secondResponse);
+        when(restaurantRepository.findAll()).thenReturn(List.of(firstRestaurant, secondRestaurant));
+
+        List<RestaurantResponse> responses = restaurantsService.fetchAll();
+
+        assertEquals(expectedResponses, responses);
+        verify(restaurantRepository, times(1)).findAll();
+    }
+
 }

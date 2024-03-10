@@ -7,6 +7,7 @@ import com.example.catalog.enums.City;
 import com.example.catalog.enums.Currency;
 import com.example.catalog.exceptions.ItemNotFoundException;
 import com.example.catalog.models.responses.ItemResponse;
+import com.example.catalog.models.responses.RestaurantResponse;
 import com.example.catalog.repositories.ItemRepository;
 import com.example.catalog.repositories.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,4 +65,19 @@ class ItemsServiceTest {
         verify(itemRepository, times(1)).findById(1L);
     }
 
+    @Test
+    void testFetchingAllItems_success() {
+        Item firstItem = Item.builder().id(1L).price(new Money()).name("test_name").build();
+        Item secondItem = Item.builder().id(2L).price(new Money()).name("test_name2").build();
+        Restaurant restaurant = new Restaurant(1L, "test_name", List.of(firstItem, secondItem), City.DELHI);
+        ItemResponse firstResponse = new ItemResponse(firstItem.getId(), firstItem.getName(), firstItem.getPrice());
+        ItemResponse secondResponse = new ItemResponse(secondItem.getId(), secondItem.getName(), secondItem.getPrice());
+        List<ItemResponse> expectedResponses = List.of(firstResponse, secondResponse);
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
+
+        List<ItemResponse> responses = itemsService.fetchAll(1L);
+
+        assertEquals(expectedResponses, responses);
+        verify(restaurantRepository, times(1)).findById(1L);
+    }
 }
